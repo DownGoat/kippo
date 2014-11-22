@@ -62,6 +62,7 @@ class command_wget(HoneyPotCommand):
             self.exit()
             return
 
+        file_name = None
         outfile = None
         for opt in optlist:
             if opt[0] == '-O':
@@ -101,6 +102,7 @@ class command_wget(HoneyPotCommand):
         if self.deferred:
             self.deferred.addCallback(self.success)
             self.deferred.addErrback(self.error, url)
+
 
     def download(self, url, fakeoutfile, outputfile, *args, **kwargs):
         try:
@@ -248,11 +250,15 @@ class HTTPProgressDownloader(client.HTTPDownloader):
             self.speed / 1000))
         self.wget.honeypot.terminal.nextLine()
         self.wget.honeypot.terminal.nextLine()
+
+        pathlist = self.fakeoutfile.split("/")
+        outputfakename = pathlist[len(pathlist) - 1]
+
         self.wget.writeln(
             '%s (%d KB/s) - `%s\' saved [%d/%d]' % \
             (time.strftime('%Y-%m-%d %H:%M:%S'),
             self.speed / 1000,
-            self.fakeoutfile, self.currentlength, self.totallength))
+            outputfakename, self.currentlength, self.totallength))
         self.wget.fs.mkfile(self.fakeoutfile, 0, 0, self.totallength, 33188)
         self.wget.fs.update_realfile(
             self.wget.fs.getfile(self.fakeoutfile),
