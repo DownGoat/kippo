@@ -62,7 +62,6 @@ class command_wget(HoneyPotCommand):
             self.exit()
             return
 
-        file_name = None
         outfile = None
         for opt in optlist:
             if opt[0] == '-O':
@@ -102,7 +101,6 @@ class command_wget(HoneyPotCommand):
         if self.deferred:
             self.deferred.addCallback(self.success)
             self.deferred.addErrback(self.error, url)
-
 
     def download(self, url, fakeoutfile, outputfile, *args, **kwargs):
         try:
